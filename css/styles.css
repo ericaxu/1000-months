@@ -35,6 +35,8 @@ td {
 }
 
 .month {
+    position: relative;
+    padding: 5px 5px 35px 5px;
     height: 100%;
     width: 100%;
 }
@@ -44,5 +46,13 @@ td {
 }
 
 .add_event, .delete_event {
-    display: none;
+    visibility: hidden;
+}
+
+.add_event {
+    position: absolute;
+    height: 30px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
 }

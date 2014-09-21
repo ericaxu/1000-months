@@ -63,7 +63,9 @@ $(function () {
     var MonthView = Backbone.View.extend({
         tagName: "td",
 
-        template: _.template("<div class='month<%= className %>'><button class='add_event'>Add</button></div>"),
+        className: "month",
+
+        template: _.template("<button class='add_event'>Add</button>"),
         
         events: {
             "mouseenter": "showAddButton",
@@ -81,11 +83,11 @@ $(function () {
         },
 
         showAddButton: function() {
-            this.$(".add_event").show();
+            this.$(".add_event").css("visibility", "visible");
         },
 
         hideAddButton: function() {
-            this.$(".add_event").hide();
+            this.$(".add_event").css("visibility", "hidden");
 
         },
 
