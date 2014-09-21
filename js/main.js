@@ -52,6 +52,7 @@ $(function () {
 
     var Month = Backbone.Model.extend({
         defaults: {
+            eventList: new EventList()
         },
 
         parse: function(data) {
@@ -93,9 +94,11 @@ $(function () {
 
         addEvent: function() {
             var event = prompt("What event?");
-            this.model.get("eventList").push({event: event});
-            OneThousandMonths.save();
-            this.render();
+            if (event != null && event != "") {
+                this.model.get("eventList").push({event: event});
+                OneThousandMonths.save();
+                this.render();
+            }
         }
     });
 
@@ -106,7 +109,7 @@ $(function () {
 
     var CalendarApp = Backbone.Model.extend({
         defaults: {
-            calendar: []
+            calendar: new Calendar()
         },
         localStorage: new Backbone.LocalStorage("1000-months"),
 
