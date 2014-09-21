@@ -17,10 +17,24 @@
 
 <body>
 <div id="setup">
-    <p id="setup_error"></p>
-    <label for="birth_month">Birth Month (YYYYMM):</label>
-    <input id="birth_month" type="text" value="199308"/>
-    <button id="submit_setup">OK</button>
+    <h1>Tell me something about you</h1>
+    <p>
+        <label for="birth_month">Birth Month (YYYYMM):</label>
+        <input id="birth_month" type="text" value="199308"/>
+    </p>
+    <p class="birth error"></p>
+    <p class="birth comment"></p>
+
+    <p>
+        <label for="life_expectancy">Life expectancy in months:</label>
+        <input id="life_expectancy" type="text" value="1000"/>
+    </p>
+    <p class="life_exp error"></p>
+    <p class="life_exp comment"></p>
+
+    <p class="submit">
+        <button id="submit_setup">Done</button>
+    </p>
 </div>
 <div id="calendar">
         <table>
@@ -41,6 +55,7 @@
             </tr>
     </table>
 </div>
+<footer></footer>
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>-->
 <script src="js/vendor/jquery-1.11.1.js"></script>
 <script src="js/vendor/lodash.js"></script>

@@ -17,6 +17,18 @@ $(function () {
 
     var NUM_MONTHS = 1000;
 
+    var YOUNG_AGE = 18;
+
+    var OLD_AGE = 35;
+
+    var SHORT_LIFE = 60 * 12;
+
+    var LONG_LIFE = 100 * 12;
+
+    var MIN_BIRTH_YEAR = (new Date).getFullYear() - 150;
+
+    var EARLY_PLANNER_AGE = 10;
+
     var DEAD_TEXT = "Not around";
 
     var Event = Backbone.Model.extend({
@@ -103,7 +115,7 @@ $(function () {
         },
 
         addEvent: function() {
-            var event = prompt("What event?");
+            var event = prompt("Where happened?");
             if (event != null && event != "") {
                 this.model.get("eventList").push({event: event});
                 OneThousandMonths.save();
@@ -139,22 +151,66 @@ $(function () {
         initialize: function () {
             OneThousandMonths.fetch();
             if (OneThousandMonths.get("birth_year") && OneThousandMonths.get("birth_month")) {
-                console.log("after fetch... ", OneThousandMonths.get("calendar").at(0).get("eventList"));
+                $("#calendar").show();
                 this.render();
             } else {
                 $("#setup").show();
+                $("#setup input").on("blur", this.checkInput);
                 $("#submit_setup").on("click", $.proxy(function() {
-                    var birthMonth = $("#birth_month").val();
-                    if (birthMonth.length != 6 || isNaN(parseInt(birthMonth, 10))) {
-                        $("#setup_error").text("Six digits, please?");
-                        return;
+                    if (this.checkInput()) {
+                        var birthMonth = $("#birth_month").val();
+                        var year = parseInt(birthMonth.substring(0, 4), 10);
+                        var month = parseInt(birthMonth.substring(4, 6), 10);
+                        OneThousandMonths.set("birth_year", year);
+                        OneThousandMonths.set("birth_month", month);
+                        this.setupCalendar();
                     }
-                    OneThousandMonths.set("birth_year", parseInt(birthMonth.substring(0, 4), 10));
-                    OneThousandMonths.set("birth_month", parseInt(birthMonth.substring(4, 6), 10));
-                    this.setupCalendar();
                 }, this));
 
             }
+        },
+
+        checkInput: function() {
+            $(".error, .comment").hide();
+
+            var valid = true;
+
+            var birthMonth = $("#birth_month").val();
+            var life_exp = parseInt($("#life_expectancy").val(), 10);
+            var year = parseInt(birthMonth.substring(0, 4), 10);
+            var month = parseInt(birthMonth.substring(4, 6), 10);
+
+            if (month < 1 || month > 12) {
+                $(".birth.error").text("Are you sure you were born in the " + month + "th month? Double check with your parents?").show();
+                valid = false;
+            }
+            if (year > (new Date).getFullYear()) {
+                $(".birth.error").text("Are you the guy who took my flux capacitor?!").show();
+                valid = false;
+            }
+            if (birthMonth.length != 6 || isNaN(parseInt(birthMonth, 10))) {
+                $(".birth.error").text("Six digits please?").show();
+                valid = false;
+            }
+
+            if (isNaN(life_exp)) {
+                $(".life_exp.error").text("A number would be nice.").show();
+                valid = false;
+            } else if (life_exp > LONG_LIFE) {
+                $(".life_exp.comment").text("Living that long can be boring. Just saying.").show();
+            } else if (life_exp < SHORT_LIFE) {
+                $(".life_exp.comment").text("Really? Are you the kind of person who hates salad and never workout?").show();
+            }
+
+            if ((new Date).getFullYear() - year <= YOUNG_AGE && year <= (new Date).getFullYear()) {
+                $(".birth.comment").text("I'm jealous of how young you are.").show();
+            } else if ((new Date).getFullYear() - year >= OLD_AGE) {
+                $(".birth.comment").text("I know, right? Getting old sucks.").show();
+            } else if (year < MIN_BIRTH_YEAR) {
+                $(".birth.comment").text("Wow, I'm amazed that you are still not dead.").show();
+            }
+
+            return valid;
         },
 
         setupCalendar: function() {
@@ -174,6 +230,9 @@ $(function () {
             OneThousandMonths.set("death_year", year);
             OneThousandMonths.set("death_month", month);
             OneThousandMonths.save();
+
+            $("#setup").hide();
+            $("#calendar").show();
             this.render();
         },
 

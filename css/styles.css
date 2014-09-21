@@ -4,8 +4,54 @@ body {
     font-size: 18px;
 }
 
-#setup {
+#setup, #calendar {
     display: none;
+}
+
+#setup {
+    width: 700px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+#setup h1 {
+    margin: 50px 0;
+    text-align: center;
+}
+
+#setup input {
+    font-family: "Noto Sans", sans-serif;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    font-size: 18px;
+    line-height: 1.5em;
+    height: 2em;
+    width: 200px;
+    padding: 10px 25px;
+    background: transparent;
+    border-radius: 30px;
+    outline-style: none;
+}
+
+#submit_setup {
+    margin: 0 auto;
+    border: 2px solid #000000;
+    border-radius: 30px;
+    padding: 10px 50px 10px 50px;
+    font-size: 20px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    outline-style: none;
+}
+
+#submit_setup:hover {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.submit {
+    margin: 40px 0;
+    text-align: center;
 }
 
 #calendar table {
@@ -17,8 +63,6 @@ body {
 
 #table_header {
     height: 50px;
-    text-align: center;
-    background-color: #EEEEEE;
 }
 
 tr {
@@ -32,12 +76,17 @@ td {
 
 .year {
     width: 50px;
+}
+
+#table_header, .year {
     text-align: center;
     background-color: #EEEEEE;
+    font-weight: bold;
 }
 
 .month {
     position: relative;
+    font-size: 16px;
 }
 
 .month.alive {
@@ -71,4 +120,17 @@ td {
     width: 100%;
     left: 0;
     bottom: 0;
+    background-color: #0074CC;
+    color: #FFFFFF;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.error {
+    color: #b94a48;
+}
+
+.event {
+    margin: 0px 5px;
 }
