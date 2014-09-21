@@ -54,17 +54,9 @@ $(function () {
         defaults: {
         },
 
-        initialize: function() {
-            this.set("eventList", new EventList());
-        },
-
         parse: function(data) {
             data.eventList = new EventList(data.eventList);
             return data;
-        },
-
-        toJSON: function() {
-            return _.pick(this.attributes, "year", "month", "eventList", "className");
         }
     });
 
@@ -79,17 +71,12 @@ $(function () {
             "click .add_event" : "addEvent"
         },
 
-        initialize: function(options) {
-            this.model.get("eventList").bind('add', this.render, this);
-//            this.listenTo(this.model, "add:eventList", this.render);
-        },
-
         render: function() {
             this.$el.html(this.template(this.model.toJSON()));
-            this.model.get("eventList").each(function(event) {
-                var eventView = new EventView({ model: event });
+            for(var i = 0; i < this.model.get("eventList").length; i++) {
+                var eventView = new EventView({ model: new Event({ event: this.model.get("eventList")[i].event }) });
                 this.$el.append(eventView.render().el);
-            }, this);
+            }
             return this;
         },
 
@@ -104,9 +91,9 @@ $(function () {
 
         addEvent: function() {
             var event = prompt("What event?");
-            this.model.get("eventList").add({event: event});
+            this.model.get("eventList").push({event: event});
             OneThousandMonths.save();
-            console.log("after save... ", OneThousandMonths.get("calendar").at(0).get("eventList"));
+            this.render();
         }
     });
 
@@ -121,19 +108,11 @@ $(function () {
         },
         localStorage: new Backbone.LocalStorage("1000-months"),
 
-        initialize: function() {
-            this.set("calendar", new Calendar());
-        },
-
         parse: function(data) {
             if (data.calendar) {
                 data.calendar = new Calendar(data.calendar);
             }
             return data;
-        },
-
-        toJSON: function() {
-            return _.pick(this.attributes, "calendar", "birth_year", "birth_month", "death_year", "death_month");
         }
     });
 
