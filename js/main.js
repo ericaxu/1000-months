@@ -17,13 +17,13 @@ $(function () {
 
     var NUM_MONTHS = 1000;
 
-    var LS = window.localStorage;
-
     var Event = Backbone.Model.extend({
-
+        toJSON: function() {
+            return _.pick(this.attributes, "event");
+        }
     });
 
-    var Events = Backbone.Collection.extend({
+    var EventList = Backbone.Collection.extend({
         model: Event
     });
 
@@ -52,21 +52,25 @@ $(function () {
 
     var Month = Backbone.Model.extend({
         defaults: {
-            events: []
         },
 
         initialize: function() {
-            console.log("initialize month");
+            this.set("eventList", new EventList());
         },
 
         parse: function(data) {
-            data.events = new Events(data.events);
+            data.eventList = new EventList(data.eventList);
             return data;
+        },
+
+        toJSON: function() {
+            return _.pick(this.attributes, "year", "month", "eventList", "className");
         }
     });
 
     var MonthView = Backbone.View.extend({
-        tagName:  "td",
+        tagName: "td",
+
         template: _.template("<div class='month<%= className %>'><button class='add_event'>Add</button></div>"),
         
         events: {
@@ -75,13 +79,14 @@ $(function () {
             "click .add_event" : "addEvent"
         },
 
-        initialize: function() {
-            this.listenTo(this.model.get("events"), "add", this.render);
+        initialize: function(options) {
+            this.model.get("eventList").bind('add', this.render, this);
+//            this.listenTo(this.model, "add:eventList", this.render);
         },
 
         render: function() {
             this.$el.html(this.template(this.model.toJSON()));
-            _(this.model.get("events").models).each(function(event) {
+            this.model.get("eventList").each(function(event) {
                 var eventView = new EventView({ model: event });
                 this.$el.append(eventView.render().el);
             }, this);
@@ -99,9 +104,9 @@ $(function () {
 
         addEvent: function() {
             var event = prompt("What event?");
-            this.model.get("events").add([new Event({event: event})]);
+            this.model.get("eventList").add({event: event});
             OneThousandMonths.save();
-            console.log(OneThousandMonths.get("calendar").at(0).get("events").length);
+            console.log("after save... ", OneThousandMonths.get("calendar").at(0).get("eventList"));
         }
     });
 
@@ -115,14 +120,20 @@ $(function () {
             calendar: []
         },
         localStorage: new Backbone.LocalStorage("1000-months"),
+
         initialize: function() {
-            console.log("initialize calendar app");
             this.set("calendar", new Calendar());
         },
 
         parse: function(data) {
-            data.calendar = new Calendar(data.calendar);
+            if (data.calendar) {
+                data.calendar = new Calendar(data.calendar);
+            }
             return data;
+        },
+
+        toJSON: function() {
+            return _.pick(this.attributes, "calendar", "birth_year", "birth_month", "death_year", "death_month");
         }
     });
 
@@ -132,9 +143,9 @@ $(function () {
         el: $("#calendar"),
 
         initialize: function () {
-            OneThousandMonths.fetch({ add: true });
-            console.log(OneThousandMonths.get("calendar").at(0).get("events").length);
+            OneThousandMonths.fetch();
             if (OneThousandMonths.get("birth_year") && OneThousandMonths.get("birth_month")) {
+                console.log("after fetch... ", OneThousandMonths.get("calendar").at(0).get("eventList"));
                 this.render();
             } else {
                 $("#setup").show();
@@ -158,7 +169,7 @@ $(function () {
             var calendar = OneThousandMonths.get("calendar");
 
             for (var i = 0; i < NUM_MONTHS; i++) {
-                calendar.add(new Month({ year: year, month: month, className: "alive" }));
+                calendar.add(new Month({ year: year, month: month, className: " alive" }));
                 if (month >= 12) {
                     month = (month + 1) % 12;
                     year++;
@@ -192,7 +203,7 @@ $(function () {
                 row.append($("<td/>", { text: year, class: "year" }));
                 for (var month = 1; month <= 12; month++) {
                     if ((year == birthYear && month < birthMonth) || (year == deathYear && month >= deathMonth)) {
-                        row.append("<td></td><div class='month'></div></td>")
+                        row.append("<td class='dead'><div class='month'>not around</div></td>");
                     } else {
                         this.addMonth(calendar.at(monthCount), row);
                         monthCount++;
@@ -215,7 +226,7 @@ $(window).on("scroll", function() {
     var el;
     for (var i=0; i<elements.length; i++) {
         el = $(elements[i]);
-        if (el.offset().top >= scroll && el.is(':visible')){
+        if (el.offset().top >= scroll && el.is(":visible")){
             var tableHeader = $("#table_header").detach();
             tableHeader.insertBefore(el);
             break;

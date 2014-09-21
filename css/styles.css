@@ -21,7 +21,7 @@ body {
 }
 
 tr {
-    height: 150px;
+    height: 75px;
 }
 
 td {
@@ -34,9 +34,15 @@ td {
     text-align: center;
 }
 
-.alive {
+.month {
+    height: 100%;
+    width: 100%;
 }
 
-.add_event {
+.dead {
+    background-color: black;
+}
+
+.add_event, .delete_event {
     display: none;
 }
