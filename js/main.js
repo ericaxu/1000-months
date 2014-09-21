@@ -15,8 +15,6 @@ $(function () {
         { name: "December", abbr: "Dec" }
     ];
 
-    var NUM_MONTHS = 1000;
-
     var YOUNG_AGE = 18;
 
     var OLD_AGE = 35;
@@ -32,9 +30,6 @@ $(function () {
     var DEAD_TEXT = "Not around";
 
     var Event = Backbone.Model.extend({
-        toJSON: function() {
-            return _.pick(this.attributes, "event");
-        }
     });
 
     var EventList = Backbone.Collection.extend({
@@ -46,7 +41,12 @@ $(function () {
 
         events: {
             "mouseenter": "showDeleteButton",
-            "mouseleave": "hideDeleteButton"
+            "mouseleave": "hideDeleteButton",
+            "click .delete_event" : "deleteEvent"
+        },
+
+        initialize: function() {
+            this.listenTo(this.model, "destroy", this.remove);
         },
 
         render: function() {
@@ -55,18 +55,29 @@ $(function () {
         },
 
         showDeleteButton: function() {
-            $(this.el).find(".add_event").show();
+            $(this.el).find(".delete_event").css("visibility", "visible");
+            $(this.el).parent().find(".add_event").css("visibility", "hidden");
         },
 
         hideDeleteButton: function() {
-            $(this.el).find(".add_event").hide();
+            $(this.el).find(".delete_event").css("visibility", "hidden");
+            $(this.el).parent().find(".add_event").css("visibility", "visible");
 
+        },
+
+        deleteEvent: function() {
+            this.model.destroy(this.model);
+            OneThousandMonths.save();
         }
     });
 
     var Month = Backbone.Model.extend({
         defaults: {
-            eventList: new EventList()
+            eventList: []
+        },
+
+        initialize: function(options) {
+            this.set("eventList", new EventList(options.eventList));
         },
 
         parse: function(data) {
@@ -99,7 +110,7 @@ $(function () {
             }
 
             for(var i = 0; i < this.model.get("eventList").length; i++) {
-                var eventView = new EventView({ model: new Event({ event: this.model.get("eventList")[i].event }) });
+                var eventView = new EventView({ model: this.model.get("eventList").at(i) });
                 this.$el.append(eventView.render().el);
             }
             return this;
@@ -117,7 +128,7 @@ $(function () {
         addEvent: function() {
             var event = prompt("Where happened?");
             if (event != null && event != "") {
-                this.model.get("eventList").push({event: event});
+                this.model.get("eventList").add([{event: event}]);
                 OneThousandMonths.save();
                 this.render();
             }
@@ -161,8 +172,12 @@ $(function () {
                         var birthMonth = $("#birth_month").val();
                         var year = parseInt(birthMonth.substring(0, 4), 10);
                         var month = parseInt(birthMonth.substring(4, 6), 10);
+                        var numMonths = parseInt($("#life_expectancy").val(), 10);
+
                         OneThousandMonths.set("birth_year", year);
                         OneThousandMonths.set("birth_month", month);
+                        OneThousandMonths.set("num_months", numMonths);
+
                         this.setupCalendar();
                     }
                 }, this));
@@ -200,6 +215,8 @@ $(function () {
                 $(".life_exp.comment").text("Living that long can be boring. Just saying.").show();
             } else if (life_exp < SHORT_LIFE) {
                 $(".life_exp.comment").text("Really? Are you the kind of person who hates salad and never workout?").show();
+            } else {
+                $(".life_exp.comment").text("That's about " + (life_exp / 12).toFixed(1) + " years.").show();
             }
 
             if ((new Date).getFullYear() - year <= YOUNG_AGE && year <= (new Date).getFullYear()) {
@@ -209,7 +226,6 @@ $(function () {
             } else if (year < MIN_BIRTH_YEAR) {
                 $(".birth.comment").text("Wow, I'm amazed that you are still not dead.").show();
             }
-
             return valid;
         },
 
@@ -217,8 +233,9 @@ $(function () {
             var year = OneThousandMonths.get("birth_year");
             var month = OneThousandMonths.get("birth_month");
             var calendar = OneThousandMonths.get("calendar");
+            var numMonths = OneThousandMonths.get("num_months");
 
-            for (var i = 0; i < NUM_MONTHS; i++) {
+            for (var i = 0; i < numMonths; i++) {
                 calendar.add(new Month({ year: year, month: month, className: " alive" }));
                 if (month >= 12) {
                     month = (month + 1) % 12;
@@ -290,7 +307,6 @@ $(window).on("scroll", function() {
             }
         }
     }
-
 });
 
 //var client = new Dropbox.Client({key: 'fdtruaaps9n9ifu'});

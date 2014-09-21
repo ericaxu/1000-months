@@ -59,6 +59,7 @@ body {
     margin: 0 auto;
     border-collapse: collapse;
     table-layout: fixed;
+    margin-bottom: 50px;
 }
 
 #table_header {
@@ -70,7 +71,7 @@ tr {
 }
 
 td {
-    border: 1px solid #ADADAD;
+    border: 1px solid #BBBBBB;
     width: 100px;
 }
 
@@ -112,6 +113,13 @@ td {
 
 .add_event, .delete_event {
     visibility: hidden;
+    cursor: pointer;
+}
+
+.delete_event {
+    margin-left: 5px;
+    color: #b94a48;
+    font-weight: bolder;
 }
 
 .add_event {
@@ -124,7 +132,6 @@ td {
     color: #FFFFFF;
     font-size: 16px;
     border: none;
-    cursor: pointer;
 }
 
 .error {
@@ -133,4 +140,14 @@ td {
 
 .event {
     margin: 0px 5px;
+}
+
+footer {
+    position: fixed;
+    width: 100%;
+    padding: 10px 0;
+    bottom: 0;
+    background-color: #FFFFFF;
+    border-top: 1px solid #BBBBBB;
+    text-align: center;
 }
