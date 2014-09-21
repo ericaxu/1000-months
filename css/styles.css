@@ -18,6 +18,7 @@ body {
 #table_header {
     height: 50px;
     text-align: center;
+    background-color: #EEEEEE;
 }
 
 tr {
@@ -32,10 +33,14 @@ td {
 .year {
     width: 50px;
     text-align: center;
+    background-color: #EEEEEE;
 }
 
 .month {
     position: relative;
+}
+
+.month.alive {
     padding: 5px 5px 35px 5px;
     height: 100%;
     width: 100%;
@@ -43,6 +48,17 @@ td {
 
 .dead {
     background-color: black;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.current {
+    background-color: #0074CC;
+    color: #FFFFFF;
+}
+
+.current-year {
+    background-color: #B2CFFF;
 }
 
 .add_event, .delete_event {

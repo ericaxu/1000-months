@@ -17,6 +17,8 @@ $(function () {
 
     var NUM_MONTHS = 1000;
 
+    var DEAD_TEXT = "Not around";
+
     var Event = Backbone.Model.extend({
         toJSON: function() {
             return _.pick(this.attributes, "event");
@@ -76,6 +78,14 @@ $(function () {
 
         render: function() {
             this.$el.html(this.template(this.model.toJSON()));
+
+            var now = new Date();
+            if (this.model.get("year") == now.getFullYear() && this.model.get("month") == now.getMonth() + 1) {
+                this.$el.addClass("current");
+            } else if (this.model.get("year") == now.getFullYear()) {
+                this.$el.addClass("current-year");
+            }
+
             for(var i = 0; i < this.model.get("eventList").length; i++) {
                 var eventView = new EventView({ model: new Event({ event: this.model.get("eventList")[i].event }) });
                 this.$el.append(eventView.render().el);
@@ -187,7 +197,7 @@ $(function () {
                 row.append($("<td/>", { text: year, class: "year" }));
                 for (var month = 1; month <= 12; month++) {
                     if ((year == birthYear && month < birthMonth) || (year == deathYear && month >= deathMonth)) {
-                        row.append("<td class='dead'><div class='month'>not around</div></td>");
+                        row.append("<td class='month dead'>" + DEAD_TEXT + "</td>");
                     } else {
                         this.addMonth(calendar.at(monthCount), row);
                         monthCount++;
@@ -207,15 +217,21 @@ $(window).on("scroll", function() {
     var headerHeight = $("#table_header").height();
     var scroll = $(window).scrollTop();
     var elements = $("tr:not(#table_header)");
-    var el;
-    for (var i=0; i<elements.length; i++) {
-        el = $(elements[i]);
-        if (el.offset().top >= scroll && el.is(":visible")){
-            var tableHeader = $("#table_header").detach();
-            tableHeader.insertBefore(el);
-            break;
+    if (scroll < 5) {
+        var tableHeader = $("#table_header").detach();
+        tableHeader.insertBefore($(elements[0]));
+    } else {
+        var el;
+        for (var i=0; i<elements.length; i++) {
+            el = $(elements[i]);
+            if (el.offset().top - headerHeight + 2 >= scroll && el.is(":visible")){
+                var tableHeader = $("#table_header").detach();
+                tableHeader.insertBefore(el);
+                break;
+            }
         }
     }
+
 });
 
 //var client = new Dropbox.Client({key: 'fdtruaaps9n9ifu'});
