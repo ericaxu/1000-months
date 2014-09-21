@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Monthly Calendar - Erica Xu</title>
+    <meta name="description" content="The HTML5 Herald">
+    <meta name="author" content="SitePoint">
+
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div id="setup">
+    <p id="setup_error"></p>
+    <label for="birth_month">Birth Month (YYYYMM):</label>
+    <input id="birth_month" type="text" value="199308"/>
+    <button id="submit_setup">OK</button>
+</div>
+<div id="calendar">
+        <table>
+            <tr id="table_header">
+                <td class="year">Year</td>
+                <td>January</td>
+                <td>February</td>
+                <td>March</td>
+                <td>April</td>
+                <td>May</td>
+                <td>June</td>
+                <td>July</td>
+                <td>August</td>
+                <td>September</td>
+                <td>October</td>
+                <td>November</td>
+                <td>December</td>
+            </tr>
+    </table>
+</div>
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>-->
+<script src="js/vendor/jquery-1.11.1.js"></script>
+<script src="js/vendor/lodash.js"></script>
+<script src="js/vendor/backbone.js"></script>
+<script src="js/vendor/backbone.localStorage.js"></script>
+<!-- <script src="js/vendor/backbone.dropboxDatastore.min.js"></script> -->
+<!--<script src="https://www.dropbox.com/static/api/dropbox-datastores-1.2-latest.js"></script>-->
+<script src="js/main.js"></script>
+</body>
+</html>

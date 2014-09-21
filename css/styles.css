@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+}
+
+#setup {
+    display: none;
+}
+
+#calendar table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+#table_header {
+    height: 50px;
+    text-align: center;
+}
+
+tr {
+    height: 150px;
+}
+
+td {
+    border: 1px solid #ADADAD;
+    width: 100px;
+}
+
+.year {
+    width: 50px;
+    text-align: center;
+}
+
+.alive {
+}
+
+.add_event {
+    display: none;
+}
