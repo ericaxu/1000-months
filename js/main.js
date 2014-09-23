@@ -270,7 +270,8 @@ $(function () {
 
             for (var year = birthYear; year <= deathYear; year++) {
                 var row = $("<tr/>");
-                row.append($("<td/>", { text: year, class: "year" }));
+                var age = year - birthYear;
+                row.append($("<td/>", { text: year + " (age " + age + ")", class: "year" }));
                 for (var month = 1; month <= 12; month++) {
                     if ((year == birthYear && month < birthMonth) || (year == deathYear && month >= deathMonth)) {
                         row.append("<td class='month dead'>" + DEAD_TEXT + "</td>");
